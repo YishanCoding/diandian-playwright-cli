@@ -1,0 +1,18 @@
+# Session & auth files — never commit
+diandian_cookies.json
+diandian_session.json
+/tmp/diandian_session.json
+*.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Debug / temp
+*.html
+*.txt
+debug_*
+last_api_debug*
