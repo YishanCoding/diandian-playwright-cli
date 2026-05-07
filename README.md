@@ -37,6 +37,8 @@ session 保存到 `/tmp/diandian_session.json`，包含 cookies + localStorage�
 | `global_scan.py` | 多国并行扫描单词排名 | `python3 global_scan.py --app_id <id> --keyword "xxx"` |
 | `get_countries_v2.py` | 探测 App 在架国家列表 | `python3 get_countries_v2.py` |
 | `seed_mining.py` | 种子词竞品挖掘完整流水线 | `python3 seed_mining.py --seeds "funko pop,anime" --output /tmp/results` |
+| `trending.py` | 搜索指数榜单（支持分类筛选） | `python3 trending.py --country cn --category 工具` |
+| `ranking.py` | App Store / GP 榜单（免费/付费/畅销） | `python3 ranking.py free --country cn --category 游戏` |
 
 ## 常用流程
 
