@@ -39,6 +39,27 @@ session 保存到 `/tmp/diandian_session.json`，包含 cookies + localStorage�
 | `seed_mining.py` | 种子词竞品挖掘完整流水线 | `python3 seed_mining.py --seeds "funko pop,anime" --output /tmp/results` |
 | `trending.py` | 搜索指数榜单（支持分类筛选） | `python3 trending.py --country cn --category 工具` |
 | `ranking.py` | App Store / GP 榜单（免费/付费/畅销） | `python3 ranking.py free --country cn --category 游戏` |
+| `fetch_diandian_keyword_trends.py` | 抓每个关键词近 N 天**分日排名趋势**（OpenCLI 驱动，非 Playwright） | `python3 fetch_diandian_keyword_trends.py --internal-id <id> --candidates words.json --days 30 --out trends.json` |
+
+## 分日排名趋势（fetch_diandian_keyword_trends.py）
+
+点点关键词「📊 关键词综合走势」弹窗调的端点是
+`POST /pc/app/v1/word/app/trend`，返回 `data.lines[0].stats = [[unix_ts, rank], …]` 的每日排名序列。
+该请求带前端生成的 `k` 签名，**无法直接构造**。解法：通过 **OpenCLI** 驱动已登录点点的浏览器，
+调用页面自带的已签名 axios 实例 `window.$nuxt.context.$axios`（baseURL `https://api.diandian.com/pc`）——
+拦截器自动加 `k` + 带 cookie，无需破解签名。
+
+```bash
+# 前置：OpenCLI daemon 在跑、扩展已连接；浏览器已登录点点（脚本会自动注入 /tmp/diandian_session.json）
+# candidates 为 JSON 字符串数组（如当前排名 ≤30 的词），逐词拉 30 天分日排名
+python3 fetch_diandian_keyword_trends.py \
+    --internal-id 53u5u6xw9779mt7 --country-id 24 \
+    --candidates /tmp/candidates.json --days 30 --batch 10 \
+    --out /tmp/kw_trends.json
+```
+
+- 每请求 8s 超时、每批落盘、断点续跑（`--out` 已存在则跳过已抓到的词）。
+- 与本仓库其它脚本不同：本脚本走 OpenCLI（`opencli browser <session> eval`），不是 Playwright。
 
 ## 常用流程
 
